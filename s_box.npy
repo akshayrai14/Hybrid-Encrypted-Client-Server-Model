@@ -1,0 +1,45 @@
+import random
+
+def generate_random_sbox(input_bits, output_bits):
+    sbox = [[random.randint(0, (2**output_bits)-1) for _ in range(2**input_bits)] for _ in range(input_bits)]
+    return sbox
+
+def shuffle_rows(sbox):
+    random.shuffle(sbox)
+    return sbox
+
+def shuffle_columns(sbox):
+    for i in range(len(sbox)):
+        random.shuffle(sbox[i])
+    return sbox
+
+def introduce_random_entries(sbox, num_entries):
+    for _ in range(num_entries):
+        row = random.randint(0, len(sbox)-1)
+        col = random.randint(0, len(sbox[0])-1)
+        sbox[row][col] = random.randint(0, (2**len(sbox[0]))-1)
+    return sbox
+
+def add_xored_entries(sbox, num_xored_entries):
+    for _ in range(num_xored_entries):
+        row1 = random.randint(0, len(sbox)-1)
+        col1 = random.randint(0, len(sbox[0])-1)
+        row2 = random.randint(0, len(sbox)-1)
+        col2 = random.randint(0, len(sbox[0])-1)
+        sbox[row1][col1] = sbox[row1][col1] ^ sbox[row2][col2]
+    return sbox
+
+def generate_custom_sbox(input_bits, output_bits, num_random_entries, num_xored_entries):
+    sbox = generate_random_sbox(input_bits, output_bits)
+    sbox = shuffle_rows(sbox)
+    sbox = shuffle_columns(sbox)
+    sbox = introduce_random_entries(sbox, num_random_entries)
+    sbox = add_xored_entries(sbox, num_xored_entries)
+    return sbox
+
+input_bits = 4  # Number of input bits
+output_bits = 4  # Number of output bits
+num_random_entries = 3  # Number of random entries to introduce
+num_xored_entries = 2   # Number of entries to xor
+
+custom_sbox = generate_custom_sbox(input_bits, output_bits, num_random_entries, num_xored_entries)
